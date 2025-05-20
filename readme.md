@@ -117,3 +117,42 @@ To enable natural language understanding, integrate Dialogflow ES with your proj
 ### 5. Set Webhook URL in Dialogflow
 
 -   In the Fulfillment section, paste your ngrok URL followed by `/webhook` (e.g., `https://<ngrok-id>.ngrok.io/webhook`).
+
+## Project Folder Structure
+
+Below is the recommended folder structure for the chat app, along with a brief description of each file and directory:
+
+```
+chat-app/
+├── credentials/                # Stores service account credentials (JSON file)
+│   └── <your-credentials-file>.json
+├── node_modules/               # Installed npm dependencies
+├── src/                        # Source code for the application
+│   ├── bot/                    # Chatbot logic and Dialogflow integration
+│   │   └── dialogflow.js       # Handles Dialogflow ES requests and responses
+│   ├── api/                    # External API integrations (e.g., flight info)
+│   │   └── flights.js          # Functions to fetch and process flight data
+│   ├── routes/                 # Express route handlers
+│   │   └── webhook.js          # Webhook endpoint for Dialogflow fulfillment
+│   └── utils/                  # Utility/helper functions
+│       └── logger.js           # Logging utility
+├── .env                        # Environment variables (not committed to version control)
+├── package.json                # Project metadata and dependencies
+├── package-lock.json           # Exact dependency versions
+├── server.js                   # Main entry point; starts the Express server
+└── readme.md                   # Project documentation (this file)
+```
+
+### File/Folder Descriptions
+
+-   **credentials/**: Contains your cloud service account credentials (keep this secure and out of version control).
+-   **src/bot/dialogflow.js**: Manages communication with Dialogflow ES, processes intents, and handles responses.
+-   **src/api/flights.js**: Contains logic to interact with external flight information APIs.
+-   **src/routes/webhook.js**: Defines the webhook endpoint that Dialogflow ES calls for fulfillment.
+-   **src/utils/logger.js**: Provides logging functionality for debugging and monitoring.
+-   **server.js**: Initializes the Express server and sets up middleware and routes.
+-   **.env**: Stores sensitive configuration like API keys and project IDs.
+-   **package.json / package-lock.json**: Define project dependencies and scripts.
+-   **readme.md**: Documentation and setup instructions.
+
+> **Note:** Adjust the folder structure as needed for your project. Keep credentials and sensitive files out of version control.
