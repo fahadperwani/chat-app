@@ -36,9 +36,9 @@ class BookingHandler {
 
         // The prompts for the missing parameter.
         const prompts = {
-            origin: 'Where are you flying from?',
+            origin: 'Where are you flying from and where would you like to go?',
             destination: 'Where is your destination?',
-            passengers: 'How many passengers?',
+            passengers: 'How many passengers are traveling and in which class would you prefer?',
             class: 'Which class? (Economy/Business)',
         };
 

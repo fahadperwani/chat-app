@@ -1,8 +1,8 @@
-# Chat App for Flight Information
+# Flight Booking Chat App
 
 ## Introduction
 
-This application is a chatbot designed to provide users with real-time flight information. It leverages external APIs and a service account for secure access to flight data, offering a seamless chat experience for users seeking flight details.
+This application is a chatbot that helps users book flights through a conversational interface. It uses Google Dialogflow ES for natural language understanding and integrates with external APIs for flight information. The backend is built with Node.js and Express, and Dialogflow fulfillment is handled via a webhook.
 
 ## Getting Started
 
@@ -17,8 +17,8 @@ cd chat-app
 
 ### 2. Create a Service Account
 
--   Go to your cloud provider's console (e.g., Google Cloud Console).
--   Create a new service account with the necessary permissions for accessing flight information APIs.
+-   Go to the Google Cloud Console.
+-   Create a new service account with Dialogflow API access.
 -   Download the service account credentials as a JSON file.
 
 ### 3. Add Credentials
@@ -48,7 +48,9 @@ npm install
 npx nodemon server.js
 ```
 
-The server should now be running, and you can interact with the chatbot for flight information.
+The server should now be running, and you can interact with the chatbot for flight booking.
+
+---
 
 ## Dialogflow ES Integration
 
@@ -90,6 +92,42 @@ To enable natural language understanding, integrate Dialogflow ES with your proj
 -   **Parameters:** `origin`, `destination`, `passengers`, `class` (not required)
 -   **Response:** (Handled by webhook)
 
+#### Additional Slot-Filling Intents
+
+To handle slot-filling for each booking parameter, create the following intents. All these intents use `booking_data` as both input and output context, and are fulfilled via webhook:
+
+##### Intent 5: OriginIntent
+
+-   **Input Context:** `booking_data`
+-   **Output Context:** `booking_data`
+-   **Training Phrases:** "Leaving from origin", "My origin is origin"
+-   **Parameters:** `origin` (`@sys.geo-city`), `destination` (`@sys.geo-city`)
+-   **Response:** (Handled by webhook)
+
+##### Intent 6: DestinationIntent
+
+-   **Input Context:** `booking_data`
+-   **Output Context:** `booking_data`
+-   **Training Phrases:** "Going to destination", "Destination is destination"
+-   **Parameters:** `origin` (`@sys.geo-city`), `destination` (`@sys.geo-city`)
+-   **Response:** (Handled by webhook)
+
+##### Intent 7: PassengerIntent
+
+-   **Input Context:** `booking_data`
+-   **Output Context:** `booking_data`
+-   **Training Phrases:** "For passengers people", "We are passengers"
+-   **Parameters:** `origin` (`@sys.geo-city`), `destination` (`@sys.geo-city`), `passengers` (`@sys.number`)
+-   **Response:** (Handled by webhook)
+
+##### Intent 8: ClassIntent
+
+-   **Input Context:** `booking_data`
+-   **Output Context:** `booking_data`
+-   **Training Phrases:** "I want class class", "Book in class class"
+-   **Parameters:** `origin` (`@sys.geo-city`), `destination` (`@sys.geo-city`), `passengers` (`@sys.number`), `class` (`@sys.flight-class`)
+-   **Response:** (Handled by webhook)
+
 #### Intent 4: Confirmation
 
 -   **Input Context:** `booking_data`
@@ -118,6 +156,8 @@ To enable natural language understanding, integrate Dialogflow ES with your proj
 
 -   In the Fulfillment section, paste your ngrok URL followed by `/webhook` (e.g., `https://<ngrok-id>.ngrok.io/webhook`).
 
+---
+
 ## Project Folder Structure
 
 Below is the recommended folder structure for the chat app, along with a brief description of each file and directory:
@@ -130,12 +170,10 @@ chat-app/
 ├── src/                        # Source code for the application
 │   ├── bot/                    # Chatbot logic and Dialogflow integration
 │   │   └── dialogflow.js       # Handles Dialogflow ES requests and responses
-│   ├── api/                    # External API integrations (e.g., flight info)
-│   │   └── flights.js          # Functions to fetch and process flight data
+│   ├── api/                    # External API integrations (e.g., flights.js)
 │   ├── routes/                 # Express route handlers
 │   │   └── webhook.js          # Webhook endpoint for Dialogflow fulfillment
-│   └── utils/                  # Utility/helper functions
-│       └── logger.js           # Logging utility
+│   └── utils/                  # Utility modules (e.g., logger.js)
 ├── .env                        # Environment variables (not committed to version control)
 ├── package.json                # Project metadata and dependencies
 ├── package-lock.json           # Exact dependency versions
@@ -155,4 +193,4 @@ chat-app/
 -   **package.json / package-lock.json**: Define project dependencies and scripts.
 -   **readme.md**: Documentation and setup instructions.
 
-> **Note:** Adjust the folder structure as needed for your project. Keep credentials and sensitive files out of version control.
+> **Note:** Keep credentials and sensitive files out of version control.

@@ -8,7 +8,9 @@ router.post('/', (req, res) => {
     const intent = req.body.queryResult.intent.displayName;
     const params = req.body.queryResult.parameters;
     const contexts = req.body.queryResult.outputContexts;
-    console.log(intent); // Log the intent for debugging
+    const input = req.body.queryResult.inputContexts
+    console.log("Webhook called")
+    console.log("contexts", contexts); // Log the intent for debugging
 
     let response;
 
@@ -20,6 +22,10 @@ router.post('/', (req, res) => {
 
         // Booking flow logic: initial or mid-booking steps
         case 'BookFlight':
+        case 'PassengerIntent':
+        case 'ClassIntent':
+        case 'OriginIntent':
+        case 'DestinationIntent':
         case 'BookingStep':
             // Call handler to process booking logic (e.g., validating user input, checking availability)
             const result = BookingHandler.handle(params);
@@ -29,7 +35,7 @@ router.post('/', (req, res) => {
                 fulfillmentText: result.text,
                 outputContexts: [{
                     name: `${req.body.session}/contexts/${result.context}`, // Name the context uniquely using session ID
-                    lifespan: 1, // Context lasts for 1 conversational turn
+                    lifespan: 5, // Context lasts for 1 conversational turn
                     parameters: params, // Pass the same parameters to keep data in context
                 }],
             };
@@ -38,7 +44,7 @@ router.post('/', (req, res) => {
         // Handle confirmation of the booking
         case 'Confirmation':
             response = {
-                fulfillmentText: params.confirmation ?
+                fulfillmentText: params.confirmation == 'true' ?
                     'Booking confirmed! 🎉' : 'Booking canceled.',
             };
             break;
